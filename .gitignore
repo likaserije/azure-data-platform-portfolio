@@ -1,0 +1,6 @@
+data_engineering/raw_data/
+data_engineering/bronze/
+data_engineering/silver/
+data_engineering/gold/
+*.csv
+*.parquet
