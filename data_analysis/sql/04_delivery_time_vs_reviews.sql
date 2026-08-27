@@ -6,6 +6,12 @@ SELECT
         WHEN delivery_days <= 21 THEN '15-21 days'
         ELSE '22+ days'
     END AS delivery_bucket,
+    CASE
+        WHEN delivery_days <= 7 THEN 1
+        WHEN delivery_days <= 14 THEN 2
+        WHEN delivery_days <= 21 THEN 3
+        ELSE 4
+    END AS bucket_order,
     COUNT(*) AS num_orders,
     ROUND(AVG(review_score), 2) AS avg_review_score
 FROM (
@@ -18,5 +24,5 @@ FROM (
         ON o.order_id = r.order_id
     WHERE o.order_delivered_customer_date IS NOT NULL
 ) sub
-GROUP BY delivery_bucket
-ORDER BY delivery_bucket;
+GROUP BY delivery_bucket, bucket_order
+ORDER BY bucket_order;
