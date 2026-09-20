@@ -1,7 +1,7 @@
 # ADR-001: Mapping the Local Pipeline to Azure Services
 
 ## Status
-Proposed
+Proposed for decisions 1-3; decision 4 (ML model deployment) implemented and verified.
 
 ## Context
 Phases 1-3 were built and validated locally (Python, DuckDB, Power BI,
@@ -73,6 +73,10 @@ a trial period.
   serving also keeps the architecture consistent and easier to reason
   about, rather than introducing a different compute service for each
   piece.
+  - **Status:** Implemented and verified. Deployed to a live Azure Function
+  App (Consumption plan, Linux, Python 3.11) at
+  `https://bad-review-predictor.azurewebsites.net/api/predict`, tested
+  with real requests returning correct predictions.
 - **Alternative considered:** Azure Machine Learning (Azure ML) managed
   endpoints - the "proper" enterprise ML deployment service, with built-in
   model versioning, monitoring, and A/B testing support. Rejected here due

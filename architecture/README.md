@@ -23,6 +23,9 @@ proves the deployment works with live, verified code - not just a diagram.
   `dim_products`) uploaded and verified as readable directly from the
   cloud via Python - confirmed matching row counts against the local
   version (112,650 rows).
+- A live Azure Function App serving the bad-review prediction model via
+  HTTP, deployed on the Consumption (always-free) plan, tested with real
+  requests returning correct predictions.
 
 ## What was designed but not provisioned (documented, cost-conscious)
 - Azure Functions for pipeline orchestration and ML model serving -
