@@ -9,6 +9,13 @@ gold layer. Deployed as a local API for real-time predictions.
 - **Target:** bad_review (1 = review score of 1-2 stars, 0 = 3-5 stars)
 - **Class imbalance:** ~12.8% of orders receive a bad review - handled with
   `class_weight="balanced"` rather than naive accuracy optimization.
+## Batch scoring
+`scripts/03_score_new_orders.py` demonstrates scoring new orders in
+batch: rebuilds features identically to training (critical for avoiding
+training/serving skew), then scores with the saved model. Outputs to
+`predictions/new_order_predictions.parquet`. This complements the
+real-time `/predict` API - see `architecture/adr-001-azure-mapping.md`
+(decision #5) for how this would be scheduled on Azure.
 
 ## Features
 | Feature | Rationale |
