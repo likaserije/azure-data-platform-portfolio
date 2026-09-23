@@ -84,7 +84,27 @@ a trial period.
   complexity that exceeds what this project's scale requires; would be
   the right choice for a team running many models in production with a
   need for formal MLOps practices.
-
+### 5. Batch scoring of new orders (scheduled pipeline)
+- **Local:** `03_score_new_orders.py` - samples/simulates new orders,
+  rebuilds features identically to training, scores with the saved model,
+  outputs a predictions file.
+- **Azure:** Azure Function (Timer trigger, Consumption plan), scheduled
+  to run daily/hourly after the bronze/silver/gold Functions complete.
+  Writes predictions to ADLS Gen2 as a new `gold/predictions/` dataset,
+  which Power BI or a customer service tool could consume directly.
+- **Rationale:** Same always-free execution pattern as decisions #2 and
+  #4 - reuses the exact same Azure Functions hosting approach already
+  proven with the live `/predict` endpoint (decision #4), just triggered
+  on a schedule instead of on-demand.
+- **Status:** Designed, not provisioned. The core logic (feature
+  engineering + scoring) is fully implemented and tested locally in
+  `03_score_new_orders.py`; hands-on implementation effort was prioritized
+  toward the real-time `/predict` endpoint (decision #4) as the primary
+  proof of Azure Functions deployment, given time constraints.
+- **Critical design detail:** feature engineering for new data must
+  exactly replicate training-time logic (including one-hot encoding
+  column alignment via `reindex`) to avoid training/serving skew - a
+  real risk this project explicitly handled and tested for.
 ## Consequences
 
 **Positive:**
@@ -96,6 +116,7 @@ a trial period.
   distinct services to operate and secure.
 - Direct Parquet access from Power BI avoids unnecessary intermediate
   services at this data scale.
+- Batch and real-time scoring share the same underlying model and feature engineering logic, avoiding duplicated or inconsistent prediction logic between the two paths.
 
 **Trade-offs / limitations accepted:**
 - Azure Functions' Consumption plan has a "cold start" delay (the function
